@@ -62,12 +62,12 @@ if (result.win === "no") {
     document.querySelector(".scratchContainer .scratchpad").style.backgroundSize = "cover";
     document.querySelector(".scratchContainer .scratchpad").insertAdjacentHTML(
         "beforeend",
-        `<code><p>You won</p><p><b>${result.code}</b></p><img src='https://d3gfjdwfdb7zi0.cloudfront.net/in-app-scratch/assets/Icon.svg' alt='copy-code-icon' style="width:20px;" onclick="copyCode();"><span id='code' style="display:none;">✓</span></code>`
+        `<code><p>You won</p><p><b>${result.code}</b></p><img src='https://d3gfjdwfdb7zi0.cloudfront.net/in-app-scratch/assets/Icon.svg' alt='copy-code-icon' style='width:20px; cursor:pointer;' onclick='copyCode();'><span id='code' style='display:none;'>✓</span></code>`
     );
     document.querySelector(".winScreen code p:nth-child(2)").innerHTML = `<b>${result.code}</b>`;
     promoCode = result.code;
 
-    // **HERE is the key change: update the link with promo code**
+    // Update the referral_code param in the CTA link
     updateReferralCodeInLink();
 
     try {
