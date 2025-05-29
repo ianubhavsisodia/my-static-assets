@@ -32,14 +32,11 @@ function callScratchPad() {
 }
 
 var result = weightedRandom(DATA);
-
 // Wieghtage on which you dont want to show winning screen goes to if condition i.e. in our case 40.
 if (result.win === "no") {
     document.querySelector(".scratchContainer .scratchpad").style.backgroundImage = "url('https://d3gfjdwfdb7zi0.cloudfront.net/in-app-scratch/assets/lose.png')";
     document.querySelector(".scratchContainer .scratchpad").style.backgroundSize = "cover";
-    document
-        .querySelector(".scratchContainer .scratchpad")
-        .insertAdjacentHTML("beforeend", `<p>Better luck next time!</p>`);
+    document.querySelector(".scratchContainer .scratchpad").insertAdjacentHTML("beforeend", `<p>Better luck next time!</p>`);
     promoCode = "";
     try {
         weNotification.trackEvent(
@@ -58,32 +55,27 @@ if (result.win === "no") {
 } else {
     document.querySelector(".scratchContainer .scratchpad").style.backgroundImage = "url('https://d3gfjdwfdb7zi0.cloudfront.net/in-app-scratch/assets/Won.png')";
     document.querySelector(".scratchContainer .scratchpad").style.backgroundSize = "cover";
-    document
-        .querySelector(".scratchContainer .scratchpad")
-        .insertAdjacentHTML(
-            "beforeend",
-            `<code><p>You won</p><p><b>${result.code}</b></p><img src='https://d3gfjdwfdb7zi0.cloudfront.net/in-app-scratch/assets/Icon.svg' alt='copy-code-icon' srcset='' style="width:20px;"><span id='code'>✔</span></code>`
-        );
+    document.querySelector(".scratchContainer .scratchpad").insertAdjacentHTML(
+        "beforeend",
+        `<code><p>You won</p><p><b>${result.code}<b></p><img src='https://d3gfjdwfdb7zi0.cloudfront.net/in-app-scratch/assets/Icon.svg' alt='copy-code-icon' srcset='' style="width:20px;"><span id='code'>âœ“</span></code>`
+    );
     document.querySelector(".winScreen code p").innerHTML =
         `<p>You won</p><p><b>${result.code}</b></p>`;
     promoCode = result.code;
 
-    // *** HERE: Update CTA link to append promoCode after referral_code= ***
+    // ======== NEW: Update referral_code param in the #cta1 link automatically ========
     var cta = document.getElementById("cta1");
     if (cta && promoCode) {
-        var href = cta.getAttribute("href");
-        var newHref;
-
-        if (href.includes("referral_code=")) {
-            // Replace referral_code= value with promoCode
-            newHref = href.replace(/(referral_code=)[^&]*/, `$1${promoCode}`);
-        } else {
-            // If referral_code= missing, append it at the end
-            newHref = href + (href.includes("?") ? "&" : "?") + "referral_code=" + promoCode;
+        try {
+            var url = new URL(cta.href);
+            url.searchParams.set("referral_code", promoCode);
+            cta.href = url.toString();
+        } catch {
+            // fallback if URL API is not supported
+            cta.href = cta.href.replace(/referral_code=[^&]*/, "referral_code=" + promoCode);
         }
-
-        cta.setAttribute("href", newHref);
     }
+    // ================================================================================
 
     try {
         weNotification.trackEvent(
